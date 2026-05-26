@@ -15,13 +15,6 @@
 
     <form id="problemForm" name="problemForm" class="space-y-4">
       
-      <div>
-        <label class="block text-sm font-semibold text-gray-700">Sub Category</label>
-        <select id="subCategory" name="subCategory" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option value="">Memuat kategori masalah...</option>
-        </select>
-      </div>
-
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label class="block text-sm font-semibold text-gray-700">No. Polisi (Nopol)</label>
@@ -62,17 +55,9 @@
         <input type="text" name="dokumenDitahan" placeholder="Contoh: STNK, KIR, atau sampaikan 'Tidak Ada'" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-semibold text-gray-700">Created By</label>
-          <select id="createdBy" name="createdBy" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
-            <option value="">Memuat data manpower...</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-semibold text-gray-700">Follow Up / Tindakan Utama</label>
-          <input type="text" name="followUp" required placeholder="Contoh: Koordinasi dengan mekanik / Vendor" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
-        </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700">Follow Up / Tindakan Utama</label>
+        <input type="text" name="followUp" required placeholder="Contoh: Koordinasi dengan mekanik / Vendor" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
       </div>
 
       <div class="pt-4">
@@ -93,54 +78,6 @@
       autoFillMirror.value = this.value;
     });
 
-    // Load data dari Sheet saat halaman dimuat
-    window.addEventListener('load', function() {
-      const selectManPower = document.getElementById('createdBy');
-      const selectSubCategory = document.getElementById('subCategory');
-      
-      // 1. Ambil Data Man Power
-      fetch(scriptURL + "?action=getManPowerList")
-        .then(response => response.json())
-        .then(data => {
-          selectManPower.innerHTML = '<option value="">-- Pilih Nama Anda --</option>';
-          if(data && data.length > 0) {
-            data.forEach(function(name) {
-              let opt = document.createElement('option');
-              opt.value = name;
-              opt.textContent = name;
-              selectManPower.appendChild(opt);
-            });
-          } else {
-            selectManPower.innerHTML = '<option value="Admin">Admin (Manual Fill)</option>';
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching manpower:', error);
-          selectManPower.innerHTML = '<option value="Admin">Admin (Koneksi gagal, lanjut manual)</option>';
-        });
-
-      // 2. Ambil Data Sub Category Masalah
-      fetch(scriptURL + "?action=getSubCategoryList")
-        .then(response => response.json())
-        .then(data => {
-          selectSubCategory.innerHTML = '<option value="">-- Pilih Kategori Masalah --</option>';
-          if(data && data.length > 0) {
-            data.forEach(function(category) {
-              let opt = document.createElement('option');
-              opt.value = category;
-              opt.textContent = category;
-              selectSubCategory.appendChild(opt);
-            });
-          } else {
-            selectSubCategory.innerHTML = '<option value="">Gagal memuat kategori otomatis</option>';
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching sub category:', error);
-          selectSubCategory.innerHTML = '<option value="">Gagal koneksi, silakan refresh</option>';
-        });
-    });
-
     // Proses Pengiriman Form
     const form = document.forms['problemForm'];
     
@@ -153,25 +90,4 @@
       fetch(scriptURL, { method: 'POST', body: new FormData(form) })
         .then(response => response.json())
         .then(result => {
-          btn.disabled = false;
-          btn.innerText = "Kirim Laporan";
-          if (result.success || result.result === "success") {
-            alert("Data berhasil disimpan!");
-            form.reset();
-            autoFillMirror.value = "";
-          } else {
-            alert("Gagal menyimpan data.");
-          }
-        })
-        .catch(error => {
-          console.error('Error!', error.message);
-          btn.disabled = false;
-          btn.innerText = "Kirim Laporan";
-          alert("Laporan berhasil dikirim! (Data tercatat di spreadsheet)");
-          form.reset();
-          autoFillMirror.value = "";
-        });
-    });
-  </script>
-</body>
-</html>
+          btn.
