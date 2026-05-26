@@ -17,14 +17,8 @@
       
       <div>
         <label class="block text-sm font-semibold text-gray-700">Sub Category</label>
-        <select name="subCategory" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-          <option value="">-- Pilih Kategori Masalah --</option>
-          <option value="Keterlambatan Armada">Keterlambatan Armada</option>
-          <option value="Kerusakan Unit">Kerusakan Unit (Breakdown)</option>
-          <option value="Masalah Dokumen">Masalah Dokumen</option>
-          <option value="Pencegatan/Pungli">Pencegatan / Pungli</option>
-          <option value="Kecelakaan (Accident)">Kecelakaan (Accident)</option>
-          <option value="Lain-lain">Lain-lain</option>
+        <select id="subCategory" name="subCategory" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+          <option value="">Memuat kategori masalah...</option>
         </select>
       </div>
 
@@ -90,10 +84,8 @@
   </div>
 
   <script>
-    // URL Web App Google Apps Script yang baru
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyX0qK2WuHKh8QIP6YPn4a6mqzrzwleXM5oRzATxefblhPqltoaEoRfsoE-ID8SyFx2qg/exec';
     
-    // Fitur Auto Fill secara real-time
     const deskripsiInput = document.getElementById('deskripsi');
     const autoFillMirror = document.getElementById('autoFillMirror');
     
@@ -101,33 +93,55 @@
       autoFillMirror.value = this.value;
     });
 
-    // Load data Man Power dari Sheet saat halaman dimuat (Menggunakan GET Request)
+    // Load data dari Sheet saat halaman dimuat
     window.addEventListener('load', function() {
-      const select = document.getElementById('createdBy');
+      const selectManPower = document.getElementById('createdBy');
+      const selectSubCategory = document.getElementById('subCategory');
       
-      // Memanggil endpoint Apps Script dengan parameter action=getManPowerList
+      // 1. Ambil Data Man Power
       fetch(scriptURL + "?action=getManPowerList")
         .then(response => response.json())
         .then(data => {
-          select.innerHTML = '<option value="">-- Pilih Nama Anda --</option>';
+          selectManPower.innerHTML = '<option value="">-- Pilih Nama Anda --</option>';
           if(data && data.length > 0) {
             data.forEach(function(name) {
               let opt = document.createElement('option');
               opt.value = name;
               opt.textContent = name;
-              select.appendChild(opt);
+              selectManPower.appendChild(opt);
             });
           } else {
-            select.innerHTML = '<option value="Admin">Admin (Manual Fill)</option>';
+            selectManPower.innerHTML = '<option value="Admin">Admin (Manual Fill)</option>';
           }
         })
         .catch(error => {
           console.error('Error fetching manpower:', error);
-          select.innerHTML = '<option value="Admin">Admin (Koneksi gagal, lanjut manual)</option>';
+          selectManPower.innerHTML = '<option value="Admin">Admin (Koneksi gagal, lanjut manual)</option>';
+        });
+
+      // 2. Ambil Data Sub Category Masalah
+      fetch(scriptURL + "?action=getSubCategoryList")
+        .then(response => response.json())
+        .then(data => {
+          selectSubCategory.innerHTML = '<option value="">-- Pilih Kategori Masalah --</option>';
+          if(data && data.length > 0) {
+            data.forEach(function(category) {
+              let opt = document.createElement('option');
+              opt.value = category;
+              opt.textContent = category;
+              selectSubCategory.appendChild(opt);
+            });
+          } else {
+            selectSubCategory.innerHTML = '<option value="">Gagal memuat kategori otomatis</option>';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching sub category:', error);
+          selectSubCategory.innerHTML = '<option value="">Gagal koneksi, silakan refresh</option>';
         });
     });
 
-    // Proses Pengiriman Form (Menggunakan POST Request)
+    // Proses Pengiriman Form
     const form = document.forms['problemForm'];
     
     form.addEventListener('submit', e => {
@@ -137,7 +151,7 @@
       btn.innerText = "Sedang Mengirim...";
       
       fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-        .then(response => response.json()) // Asumsi Apps Script mengembalikan JSON
+        .then(response => response.json())
         .then(result => {
           btn.disabled = false;
           btn.innerText = "Kirim Laporan";
@@ -154,7 +168,6 @@
           btn.disabled = false;
           btn.innerText = "Kirim Laporan";
           alert("Laporan berhasil dikirim! (Data tercatat di spreadsheet)");
-          // Terkadang CORS strict menyembunyikan response body, namun data tetap masuk
           form.reset();
           autoFillMirror.value = "";
         });
