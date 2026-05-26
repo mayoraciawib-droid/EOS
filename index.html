@@ -10,7 +10,7 @@
   <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
     <div class="text-center mb-8">
       <h2 class="text-2xl font-bold text-gray-800">Form Problem Journey</h2>
-      <p class="text-sm text-gray-500">Monitoring Logistik Ekspidisi & End of Shift</p>
+      <p class="text-sm text-gray-500">Monitoring Logistik Ekspedisi & End of Shift</p>
     </div>
 
     <form id="problemForm" name="problemForm" class="space-y-4">
@@ -74,20 +74,44 @@
     const deskripsiInput = document.getElementById('deskripsi');
     const autoFillMirror = document.getElementById('autoFillMirror');
     
+    // Mirror the description to the auto-fill field
     deskripsiInput.addEventListener('input', function() {
       autoFillMirror.value = this.value;
     });
 
-    // Proses Pengiriman Form
+    // Handle Form Submission
     const form = document.forms['problemForm'];
     
     form.addEventListener('submit', e => {
       e.preventDefault();
+      
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
       btn.innerText = "Sedang Mengirim...";
       
       fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
         .then(result => {
-          btn.
+          // Success state
+          alert("Laporan berhasil dikirim!");
+          form.reset();
+          autoFillMirror.value = ''; // Clear the mirror field manually
+          btn.disabled = false;
+          btn.innerText = "Kirim Laporan";
+        })
+        .catch(error => {
+          // Error state
+          console.error('Error!', error.message);
+          alert("Terjadi kesalahan saat mengirim laporan. Silakan coba lagi.");
+          btn.disabled = false;
+          btn.innerText = "Kirim Laporan";
+        });
+    });
+  </script>
+</body>
+</html>
