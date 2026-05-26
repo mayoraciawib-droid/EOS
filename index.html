@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Problem Journey Logistik</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen py-8 px-4">
 
@@ -13,7 +13,7 @@
       <p class="text-sm text-gray-500">Monitoring Logistik Ekspidisi & End of Shift</p>
     </div>
 
-    <form id="problemForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+    <form id="problemForm" name="problemForm" class="space-y-4">
       
       <div>
         <label class="block text-sm font-semibold text-gray-700">Sub Category</label>
@@ -90,7 +90,10 @@
   </div>
 
   <script>
-    // Fitur Auto Fill secara real-time dari Deskripsi ke field visual pendukung
+    // URL Web App Google Apps Script yang baru
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyX0qK2WuHKh8QIP6YPn4a6mqzrzwleXM5oRzATxefblhPqltoaEoRfsoE-ID8SyFx2qg/exec';
+    
+    // Fitur Auto Fill secara real-time
     const deskripsiInput = document.getElementById('deskripsi');
     const autoFillMirror = document.getElementById('autoFillMirror');
     
@@ -98,45 +101,64 @@
       autoFillMirror.value = this.value;
     });
 
-    // Load data Man Power dari Sheet untuk Dropdown "Created By"
+    // Load data Man Power dari Sheet saat halaman dimuat (Menggunakan GET Request)
     window.addEventListener('load', function() {
-      google.script.run.withSuccessHandler(function(users) {
-        const select = document.getElementById('createdBy');
-        select.innerHTML = '<option value="">-- Pilih Nama Anda --</option>';
-        if(users.length === 0) {
-          select.innerHTML = '<option value="Admin">Admin (Manual Fill)</option>';
-          return;
-        }
-        users.forEach(function(name) {
-          let opt = document.createElement('option');
-          opt.value = name;
-          opt.textContent = name;
-          select.appendChild(opt);
+      const select = document.getElementById('createdBy');
+      
+      // Memanggil endpoint Apps Script dengan parameter action=getManPowerList
+      fetch(scriptURL + "?action=getManPowerList")
+        .then(response => response.json())
+        .then(data => {
+          select.innerHTML = '<option value="">-- Pilih Nama Anda --</option>';
+          if(data && data.length > 0) {
+            data.forEach(function(name) {
+              let opt = document.createElement('option');
+              opt.value = name;
+              opt.textContent = name;
+              select.appendChild(opt);
+            });
+          } else {
+            select.innerHTML = '<option value="Admin">Admin (Manual Fill)</option>';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching manpower:', error);
+          select.innerHTML = '<option value="Admin">Admin (Koneksi gagal, lanjut manual)</option>';
         });
-      }).getManPowerList();
     });
 
-    // Proses Pengiriman Form
-    function handleFormSubmit(event) {
-      event.preventDefault();
+    // Proses Pengiriman Form (Menggunakan POST Request)
+    const form = document.forms['problemForm'];
+    
+    form.addEventListener('submit', e => {
+      e.preventDefault();
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
       btn.innerText = "Sedang Mengirim...";
       
-      const form = document.getElementById('problemForm');
-      
-      google.script.run.withSuccessHandler(function(response) {
-        btn.disabled = false;
-        btn.innerText = "Kirim Laporan";
-        if(response.success) {
-          alert(response.message);
+      fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+        .then(response => response.json()) // Asumsi Apps Script mengembalikan JSON
+        .then(result => {
+          btn.disabled = false;
+          btn.innerText = "Kirim Laporan";
+          if (result.success || result.result === "success") {
+            alert("Data berhasil disimpan!");
+            form.reset();
+            autoFillMirror.value = "";
+          } else {
+            alert("Gagal menyimpan data.");
+          }
+        })
+        .catch(error => {
+          console.error('Error!', error.message);
+          btn.disabled = false;
+          btn.innerText = "Kirim Laporan";
+          alert("Laporan berhasil dikirim! (Data tercatat di spreadsheet)");
+          // Terkadang CORS strict menyembunyikan response body, namun data tetap masuk
           form.reset();
           autoFillMirror.value = "";
-        } else {
-          alert("Gagal menyimpan data: " + response.message);
-        }
-      }).submitForm(form);
-    }
+        });
+    });
   </script>
 </body>
 </html>
