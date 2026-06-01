@@ -175,7 +175,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      // GANTI DENGAN LINK WEB APP APPS SCRIPT ANDA
+      // LINK WEB APP APPS SCRIPT ANDA
       const scriptURL = 'https://script.google.com/macros/s/AKfycbxar2pXl9CHx9Gs4_zTcRmaIUzHvRneq0wQgyYU6Q-9ZhjNca6tg4TMp4Qht__9brL5AQ/exec';
 
       // Fungsi Submit Form Kendala ke GAS Web App
@@ -193,9 +193,11 @@
         // Tambahkan identifier action untuk GAS
         formData.append("action", "simpanData");
 
+        // Request POST dengan penanganan Redirect 302
         fetch(scriptURL, { 
           method: 'POST', 
-          body: formData 
+          body: formData,
+          redirect: 'follow' 
         })
         .then(response => response.json())
         .then(respon => {
@@ -243,8 +245,10 @@
 
         const getUrl = `${scriptURL}?${queryParams.toString()}`;
 
+        // Request GET dengan penanganan Redirect 302
         fetch(getUrl, {
-          method: 'GET'
+          method: 'GET',
+          redirect: 'follow'
         })
         .then(response => response.text())
         .then(hasil => {
