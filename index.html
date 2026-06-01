@@ -178,7 +178,7 @@
       // LINK WEB APP APPS SCRIPT ANDA
       const scriptURL = 'https://script.google.com/macros/s/AKfycbyLmjOKxpmkpfz0q-64OHI2QlrvTxBLPrLEfwkGnHnUeBfplhbe5uTq6f2Vr4Iv67jdSg/exec';
 
-      // Fungsi Submit Form Kendala ke GAS Web App
+      // Fungsi Submit Form Kendala ke GAS Web App (Dioptimalkan Melawan CORS)
       function jalankanSubmit(e) {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
@@ -193,10 +193,16 @@
         // Tambahkan identifier action untuk GAS
         formData.append("action", "simpanData");
 
-        // Request POST dengan penanganan Redirect 302
+        // Konversi FormData ke URLSearchParams agar dijamin lolos kebijakan CORS Google Apps Script
+        const searchParams = new URLSearchParams(formData);
+
+        // Request POST dengan header x-www-form-urlencoded
         fetch(scriptURL, { 
           method: 'POST', 
-          body: formData,
+          body: searchParams,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
           redirect: 'follow' 
         })
         .then(response => response.json())
@@ -215,7 +221,7 @@
         .catch(error => {
           btn.disabled = false; btn.innerText = "Kirim Laporan";
           msgBox.className = "alert mt-3 alert-danger text-center";
-          msgBox.innerText = "Terjadi kesalahan koneksi sistem."; 
+          msgBox.innerText = "Terjadi kesalahan koneksi sistem atau masalah pengaturan akses Web App."; 
           msgBox.classList.remove('d-none');
           console.error('Error!', error.message);
         });
