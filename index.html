@@ -1,117 +1,252 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Problem Journey Logistik</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen py-8 px-4">
+<html>
+  <head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      body { background-color: #f4f6f9; padding: 20px; font-family: 'Segoe UI', sans-serif; }
+      .form-container { max-width: 800px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.05); margin: auto; }
+      .header-banner { background: linear-gradient(135deg, #0d6efd, #0b5ed7); color: white; padding: 20px; border-radius: 12px 12px 0 0; margin: -30px -30px 25px -30px; text-align: center; }
+      .nav-tabs { margin-bottom: 20px; border-bottom: 2px solid #dee2e6; }
+      .nav-link { font-weight: bold; color: #495057; }
+      .nav-link.active { color: #0d6efd !important; border-bottom: 3px solid #0d6efd !important; }
+      .btn-primary { background: linear-gradient(135deg, #0d6efd, #0b5ed7); border: none; }
+      .output-box { background-color: #f8f9fa; border: 1px solid #ced4da; border-radius: 6px; padding: 15px; white-space: pre-wrap; font-family: Courier, monospace; max-height: 400px; overflow-y: auto; }
+    </style>
+  </head>
+  <body>
 
-  <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
-    <div class="text-center mb-8">
-      <h2 class="text-2xl font-bold text-gray-800">Form Problem Journey</h2>
-      <p class="text-sm text-gray-500">Monitoring Logistik Ekspedisi & End of Shift</p>
+    <div class="form-container">
+      <div class="header-banner">
+        <h4 class="mb-1">Problem Journey / End of Shift</h4>
+        <p class="mb-0 small">Form & Generator Laporan FDA Mei 2026</p>
+      </div>
+
+      <ul class="nav nav-tabs nav-fill" id="formTab" role="tablist">
+        <li class="nav-item">
+          <button class="nav-link active" id="input-tab" data-bs-toggle="tab" data-bs-target="#input-panel" type="button" role="tab">📝 Input Kendala</button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="laporan-tab" data-bs-toggle="tab" data-bs-target="#laporan-panel" type="button" role="tab">📋 Generate Laporan</button>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="formTabContent">
+        
+        <div class="tab-pane fade show active" id="input-panel" role="tabpanel">
+          <form id="problemForm" onsubmit="jalankanSubmit(event)">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Created by</label>
+                <select class="form-select" name="created_by" required>
+                  <option value="" selected disabled>Pilih Nama Pembuat...</option>
+                  <option value="AFRIDUS M. SOBA NGISO">AFRIDUS M. SOBA NGISO</option>
+                  <option value="ADITYA CHAERUL ANAM">ADITYA CHAERUL ANAM</option>
+                  <option value="ADLIN ANJASMORO">ADLIN ANJASMORO</option>
+                  <option value="AGAM SEPTYAN CAESARANDI">AGAM SEPTYAN CAESARANDI</option>
+                  <option value="ALBERT KORNELIUS DENNY">ALBERT KORNELIUS DENNY</option>
+                  <option value="ALSKY MEDIO H. P.">ALSKY MEDIO H. P.</option>
+                  <option value="ANGGARA DWI TASIMA PUTRA">ANGGARA DWI TASIMA PUTRA</option>
+                  <option value="CASRULI FERNANDA">CASRULI FERNANDA</option>
+                  <option value="DANU IKHSAN">DANU IKHSAN</option>
+                  <option value="DWIKI FARDIANSYAH">DWIKI FARDIANSYAH</option>
+                  <option value="MUHAMMAD RIZKY">MUHAMMAD RIZKY</option>
+                  <option value="REZKY RAMADHAN">REZKY RAMADHAN</option>
+                  <option value="RESA SYAFERA">RESA SYAFERA</option>
+                  <option value="RANDY TRI PRASETYO">RANDY TRI PRASETYO</option>
+                  <option value="RAHMAT DWI NURHIDAYAT">RAHMAT DWI NURHIDAYAT</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Sub Category</label>
+                <select class="form-select" name="sub_category" required>
+                  <option value="" selected disabled>Pilih Sub Kategori...</option>
+                  <option value="GPS Delay">GPS Delay</option>
+                  <option value="Main Power Off">Main Power Off</option>
+                  <option value="Perubahan Voltase">Perubahan Voltase</option>
+                  <option value="Tampering">Tampering</option>
+                  <option value="Dashboard Open">Dashboard Open</option>
+                  <option value="Towed">Towed</option>
+                  <option value="Storing">Storing</option>
+                  <option value="Ditilang">Ditilang</option>
+                  <option value="Muatan Hilang/Kurang/Rusak">Muatan Hilang/Kurang/Rusak</option>
+                  <option value="Accident">Accident</option>
+                  <option value="Driver Nahan">Driver Nahan</option>
+                  <option value="Driver Uncontacable">Driver Uncontacable</option>
+                  <option value="Driver Menolak Order">Driver Menolak Order</option>
+                  <option value="Driver Tidak Mengikuti Arahan">Driver Tidak Mengikuti Arahan</option>
+                  <option value="Driver Meninggalkan Unit">Driver Meninggalkan Unit</option>
+                  <option value="Driver Bawa Unit Pulang">Driver Bawa Unit Pulang</option>
+                  <option value="Driver Parkir Sembarangan">Driver Parkir Sembarangan</option>
+                  <option value="Driver Ngompreng">Driver Ngompreng</option>
+                  <option value="Overstay">Overstay</option>
+                  <option value="Order">Order</option>
+                  <option value="Standby">Standby</option>
+                  <option value="Pending Muat">Pending Muat</option>
+                  <option value="Pending Bongkar">Pending Bongkar</option>
+                  <option value="Hasil Kerja">Hasil Kerja</option>
+                  <option value="Request Customer">Request Customer</option>
+                  <option value="Box Kembung">Box Kembung</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-bold">No. Polisi (Nopol)</label>
+                <input type="text" class="form-control" name="nopol" placeholder="Contoh: B 9621 TEV" required>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-bold">DM Code</label>
+                <input type="text" class="form-control" name="dm" placeholder="Contoh: DM-12309">
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-bold">No. SPM</label>
+                <input type="text" class="form-control" name="spm">
+              </div>
+              
+              <hr class="mt-4">
+
+              <div class="col-12">
+                <label class="form-label fw-bold">Deskripsi Kejadian (Kolom Q)</label>
+                <textarea class="form-control" name="deskripsi" rows="3" placeholder="Ceritakan detail permasalahan..."></textarea>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Tanggal & Jam Kejadian (Kolom R)</label>
+                <input type="datetime-local" class="form-control" name="waktu_kejadian">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Dokumen Ditahan (Kolom T)</label>
+                <input type="text" class="form-control" name="dokumen" placeholder="SIM / STNK / - Jika tidak ada">
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-bold">Detail & Link Lokasi (Kolom S)</label>
+                <textarea class="form-control" name="lokasi" rows="2" placeholder="Masukkan detail nama lokasi atau link maps..."></textarea>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-bold">Follow Up (Kolom X)</label>
+                <input type="text" class="form-control" name="follow_up" placeholder="Tindakan pertama yang dilakukan...">
+              </div>
+            </div>
+            <button type="submit" id="submitBtn" class="btn btn-primary w-100 mt-4 py-2 fw-bold">Kirim Laporan</button>
+          </form>
+          <div id="responMessage" class="alert mt-3 d-none text-center" role="alert"></div>
+        </div>
+
+        <div class="tab-pane fade" id="laporan-panel" role="tabpanel">
+          <div class="bg-light p-3 rounded mb-4 border">
+            <h6 class="fw-bold text-dark mb-3">🔍 Filter Pencarian Data</h6>
+            <div class="row g-2">
+              <div class="col-md-4">
+                <label class="small fw-bold">Tanggal Mulai</label>
+                <input type="date" id="filterTglAwal" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="small fw-bold">Tanggal Akhir</label>
+                <input type="date" id="filterTglAkhir" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="small fw-bold">No Polisi (Nopol)</label>
+                <input type="text" id="filterNopol" class="form-control form-control-sm" placeholder="Semua Nopol / ketik spesifik">
+              </div>
+            </div>
+            <button onclick="buatLaporan()" id="reportBtn" class="btn btn-success btn-sm w-100 mt-3 fw-bold">Tampilkan Laporan Teks</button>
+          </div>
+
+          <div id="reportSection" class="d-none">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <label class="fw-bold text-secondary">📋 Hasil Format Laporan (Template V3):</label>
+              <button onclick="salinLaporan()" class="btn btn-outline-primary btn-sm fw-bold" id="copyBtn">📋 Salin Semua Teks</button>
+            </div>
+            <div id="outputLaporan" class="output-box"></div>
+          </div>
+        </div>
+
+      </div>
     </div>
 
-    <form id="problemForm" name="problemForm" class="space-y-4">
-      
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label class="block text-sm font-semibold text-gray-700">No. Polisi (Nopol)</label>
-          <input type="text" name="nopol" required placeholder="B 1234 ABC" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm uppercase">
-        </div>
-        <div>
-          <label class="block text-sm font-semibold text-gray-700">No. Daftar Muatan (DM)</label>
-          <input type="text" name="dm" required placeholder="DM-001" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
-        </div>
-        <div>
-          <label class="block text-sm font-semibold text-gray-700">No. SPM</label>
-          <input type="text" name="spm" required placeholder="SPM-001" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
-        </div>
-      </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Fungsi Submit Form Kendala
+      function jalankanSubmit(e) {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const msgBox = document.getElementById('responMessage');
+        btn.disabled = true;
+        btn.innerText = "Sedang Mengirim...";
+        msgBox.classList.add('d-none');
 
-      <div>
-        <label class="block text-sm font-semibold text-gray-700">Tanggal & Jam Kejadian</label>
-        <input type="datetime-local" name="tanggalJamKejadian" required class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
-      </div>
+        const form = document.getElementById('problemForm');
+        const dataObj = Object.fromEntries(new FormData(form).entries());
 
-      <div>
-        <label class="block text-sm font-semibold text-gray-700">Deskripsi Masalah</label>
-        <textarea id="deskripsi" name="deskripsi" rows="3" required placeholder="Jelaskan detail kronologi kejadian..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"></textarea>
-      </div>
+        google.script.run
+          .withSuccessHandler(function(respon) {
+            btn.disabled = false; btn.innerText = "Kirim Laporan";
+            msgBox.className = "alert mt-3 alert-success text-center";
+            msgBox.innerText = respon; msgBox.classList.remove('d-none');
+            form.reset();
+          })
+          .withFailureHandler(function(err) {
+            btn.disabled = false; btn.innerText = "Kirim Laporan";
+            msgBox.className = "alert mt-3 alert-danger text-center";
+            msgBox.innerText = "Terjadi kesalahan sistem: " + err; msgBox.classList.remove('d-none');
+          })
+          .simpanData(dataObj);
+      }
 
-      <div>
-        <label class="block text-sm font-semibold text-gray-500">Auto Fill Terintegrasi (Mirroring Deskripsi)</label>
-        <input type="text" id="autoFillMirror" readonly placeholder="Akan terisi otomatis mengikuti Deskripsi..." class="mt-1 block w-full p-2 bg-gray-50 border border-gray-200 rounded-md text-gray-500 cursor-not-allowed text-sm">
-      </div>
+      // Fungsi Filter Laporan (Template V3)
+      function buatLaporan() {
+        const btn = document.getElementById('reportBtn');
+        const outBox = document.getElementById('outputLaporan');
+        const sect = document.getElementById('reportSection');
+        
+        btn.disabled = true;
+        btn.innerText = "Mengekstrak Data...";
+        sect.classList.add('d-none');
 
-      <div>
-        <label class="block text-sm font-semibold text-gray-700">Detail & Link Lokasi Kejadian</label>
-        <input type="url" name="lokasiKejadian" required placeholder="https://maps.google.com/..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
-      </div>
+        const filterData = {
+          tgl_awal: document.getElementById('filterTglAwal').value,
+          tgl_akhir: document.getElementById('filterTglAkhir').value,
+          nopol: document.getElementById('filterNopol').value
+        };
 
-      <div>
-        <label class="block text-sm font-semibold text-gray-700">Dokumen Ditahan</label>
-        <input type="text" name="dokumenDitahan" placeholder="Contoh: STNK, KIR, atau sampaikan 'Tidak Ada'" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
-      </div>
+        google.script.run
+          .withSuccessHandler(function(hasil) {
+            btn.disabled = false;
+            btn.innerText = "Tampilkan Laporan Teks";
+            outBox.innerText = hasil;
+            sect.classList.remove('d-none');
+          })
+          .withFailureHandler(function(err) {
+            btn.disabled = false;
+            btn.innerText = "Tampilkan Laporan Teks";
+            outBox.innerText = "Gagal memuat data: " + err;
+            sect.classList.remove('d-none');
+          })
+          .generateLaporan(filterData);
+      }
 
-      <div>
-        <label class="block text-sm font-semibold text-gray-700">Follow Up / Tindakan Utama</label>
-        <input type="text" name="followUp" required placeholder="Contoh: Koordinasi dengan mekanik / Vendor" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm">
-      </div>
-
-      <div class="pt-4">
-        <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md shadow hover:bg-blue-700 transition duration-200">
-          Kirim Laporan
-        </button>
-      </div>
-    </form>
-  </div>
-
-  <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyX0qK2WuHKh8QIP6YPn4a6mqzrzwleXM5oRzATxefblhPqltoaEoRfsoE-ID8SyFx2qg/exec';
-    
-    const deskripsiInput = document.getElementById('deskripsi');
-    const autoFillMirror = document.getElementById('autoFillMirror');
-    
-    // Mirror the description to the auto-fill field
-    deskripsiInput.addEventListener('input', function() {
-      autoFillMirror.value = this.value;
-    });
-
-    // Handle Form Submission
-    const form = document.forms['problemForm'];
-    
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      
-      const btn = document.getElementById('submitBtn');
-      btn.disabled = true;
-      btn.innerText = "Sedang Mengirim...";
-      
-      fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(result => {
-          // Success state
-          alert("Laporan berhasil dikirim!");
-          form.reset();
-          autoFillMirror.value = ''; // Clear the mirror field manually
-          btn.disabled = false;
-          btn.innerText = "Kirim Laporan";
-        })
-        .catch(error => {
-          // Error state
-          console.error('Error!', error.message);
-          alert("Terjadi kesalahan saat mengirim laporan. Silakan coba lagi.");
-          btn.disabled = false;
-          btn.innerText = "Kirim Laporan";
+      // Fungsi Copy to Clipboard
+      function salinLaporan() {
+        const teks = document.getElementById('outputLaporan').innerText;
+        const btn = document.getElementById('copyBtn');
+        
+        navigator.clipboard.writeText(teks).then(function() {
+          btn.innerText = "✔️ Berhasil Disalin!";
+          btn.className = "btn btn-success btn-sm fw-bold";
+          setTimeout(() => {
+            btn.innerText = "📋 Salin Semua Teks";
+            btn.className = "btn btn-outline-primary btn-sm fw-bold";
+          }, 2000);
         });
-    });
-  </script>
-</body>
+      }
+    </script>
+  </body>
 </html>
